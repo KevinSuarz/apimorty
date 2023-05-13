@@ -2,7 +2,7 @@
 /// PHP no entiende json, por ello, hay que "traducirle" json a un array asociativo
 $_POST = json_decode(file_get_contents('php://input'), true);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST)) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nombre'])) {
     $nombre = $_POST["nombre"];
     // Conectar a la base de datos MySQLxº
     $conexion = mysqli_connect('localhost', 'root', '', 'axios_php');
@@ -14,22 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST)) {
     $sql = "INSERT INTO usuarios (nombre) VALUES ('$nombre')";
 
     if (mysqli_query($conexion, $sql)) {
-        $query = "SELECT nombre from usuarios";
-        $resultado = mysqli_query($conexion, $query);
-        $nombres = array();
-
-        while ($row = mysqli_fetch_assoc($resultado)) {
-            $nombres[] = $row['nombre'];
-        };
-
-        echo json_encode($nombres);
+        echo json_encode($nombre);
 
     } else {
         echo "Error al guardar el nombre: " . mysqli_error($conexion);
     }
     // Cerrar la conexión a la base de datos
     mysqli_close($conexion);
-} else {
-    echo "Fallo";
-}
+}else {
+  echo "Fallo";
+};
 ?>
